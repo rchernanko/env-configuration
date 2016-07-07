@@ -1,33 +1,47 @@
 package com.richard.test;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+
+import java.util.Map;
 
 public class RichardTest {
 
-    private WebDriver driver;
+    private Map<String, String> profiles;
+    private EnvConfig envConfig = new EnvConfig();
+
+    @Before
+    public void setUp() {
+        profiles = envConfig.getProfiles();
+    }
 
     @Test
     public void openPageTest() {
-        driver = getWebDriver();
-        driver.navigate().to("http://www.bbc.co.uk/football");
+        getWebDriver().navigate().to("http://www.bbc.co.uk/football");
+    }
+
+    private WebDriver getWebDriver() {
+
+        switch (profiles.get("browser-name")) {
+
+        case "chrome":
+            return new ChromeDriver();
+        case "firefox":
+            return new FirefoxDriver();
+        case "ie11":
+            return new InternetExplorerDriver();
+        default:
+            return new ChromeDriver();
+        }
     }
 
     @After
     public void tearDown() {
-        driver.quit();
+        getWebDriver().quit();
     }
-
-    private WebDriver getWebDriver() {
-        return new FirefoxDriver();
-
-        //need some way of linking the what's in the environment.yml file with which WebDriver to pass back.
-        //Am not far away, but i need to go to the gym ha!
-        //ifHasProperty() method. Need to work out how to inject Environment into here. I think I will have to create
-        //an abstraction layer and inject the Environment file into there. So that webdriver navigate to - put it in a
-        //new class and then have the Environment shizzle there. Try it out
-    }
-
 }

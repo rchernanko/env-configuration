@@ -6,13 +6,13 @@ import java.util.Map;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.error.YAMLException;
 
-public class Environment {
+public class EnvConfig {
 
     private static final String ENV = System.getProperty("env", "default");
 
-    private Map<String, Object> environment;
+    private Map environments;
 
-    public Environment() {
+    public EnvConfig() {
         init(getEnvironmentFile());
     }
 
@@ -20,11 +20,11 @@ public class Environment {
         try {
             InputStream inputStream = new FileInputStream(file);
             Yaml yaml = new Yaml();
-            Map<String, Map<String, Object>> myYamlFile = ((Map<String, Map<String, Object>>) yaml
+            Map<String, Map<String, String>> myYamlFile = ((Map<String, Map<String, String>>) yaml
                     .load(inputStream));
-            environment = (Map<String, Object>) myYamlFile.get(ENV);
-            if (environment == null) {
-                throw new RuntimeException("The environment ["
+            environments = myYamlFile.get(ENV);
+            if (environments == null) {
+                throw new RuntimeException("The environments ["
                         + ENV
                         + "] does not exist in the file ["
                         + file.getAbsolutePath() + "].");
@@ -34,6 +34,10 @@ public class Environment {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Map getProfiles() {
+        return environments;
     }
 
     private File getEnvironmentFile() {
