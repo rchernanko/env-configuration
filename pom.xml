@@ -26,7 +26,6 @@
                     <argLine>-Dfile.encoding=UTF-8</argLine>
                     <systemPropertyVariables>
                         <env>${env}</env>
-                        <hello>${hello}</hello>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
